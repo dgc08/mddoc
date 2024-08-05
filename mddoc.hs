@@ -1,6 +1,8 @@
--- # MdDoc Parser
+-- # MdDoc Markdown -> Source Files compiler
 -- 
 -- This is just a quick project, nothing too fancy (but I am required to write documentation or the purpose would be defeated).
+-- 
+-- This file is README/Documentation and source file in one. The purpose of this little program is to convert Markdown files to source files, by commenting everything except for the code blocks.
 -- 
 -- You can write your source files in Markdown files with codeblocks. Run all your Markdown files through this program, and the normal source file will be produced, with all non-code turned to comments. Take a look at the Makefile for examples on how to automate that.
 -- 
@@ -11,7 +13,9 @@
 -- to build the program.
 -- As long as the output source file is present and recent enough, this command should work. If not, you can try to use 
 -- `make bootstrap`
--- as long as a source file exists.
+-- before that to make a bootstrap executable as long as a source file exists. Make sure to run the real build command after that once again.
+-- 
+-- The output of this program (the Haskell file) is included in Git for it to be bootstrapped.
 -- 
 -- # The Code itself 
 -- Imports and helper functions
