@@ -20,7 +20,7 @@
 -- # The Code itself 
 -- Imports and helper functions
 import System.Directory.Internal.Prelude (getArgs)
-import Data.List (intercalate)
+import Data.List (intercalate, isPrefixOf)
 
 
 -- Split a string by the specified delimiter
@@ -39,11 +39,11 @@ parseCodeDoc input commentPrefix codeBegin codeEnd = unlines $ commentText $ lin
     parseCodeBlock :: [String] -> [String]
     parseCodeBlock [] = []
     parseCodeBlock (x:xs)
-      | codeEnd == x = commentText xs
+      | codeEnd `isPrefixOf` x = commentText xs
       | otherwise    = x : parseCodeBlock xs
     commentText :: [String] -> [String]
     commentText (x:xs)
-      | codeBegin == x = parseCodeBlock xs
+      | codeBegin `isPrefixOf` x = parseCodeBlock xs
       | otherwise      = (commentPrefix ++ " " ++ x) : commentText xs
     commentText [] = []
 

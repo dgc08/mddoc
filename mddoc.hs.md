@@ -19,9 +19,9 @@ The output of this program (the Haskell file) is included in Git for it to be bo
 
 # The Code itself 
 Imports and helper functions
-```
+``` haskell
 import System.Directory.Internal.Prelude (getArgs)
-import Data.List (intercalate)
+import Data.List (intercalate, isPrefixOf)
 
 
 -- Split a string by the specified delimiter
@@ -35,25 +35,25 @@ splitBy delim str = case break (== delim) str of
 The 'compiler' itself ahs two stages which switch between itself:
 `commentText` comments the markdown text. If a new code block is detected, it switches to
 `parseCodeBlock`, which reads in the code unchanged, unti the code block ends. Then it switches back.
-```
+``` haskell
 parseCodeDoc :: String -> String -> String -> String -> String
 parseCodeDoc input commentPrefix codeBegin codeEnd = unlines $ commentText $ lines input
   where
     parseCodeBlock :: [String] -> [String]
     parseCodeBlock [] = []
     parseCodeBlock (x:xs)
-      | codeEnd == x = commentText xs
+      | codeEnd `isPrefixOf` x = commentText xs
       | otherwise    = x : parseCodeBlock xs
     commentText :: [String] -> [String]
     commentText (x:xs)
-      | codeBegin == x = parseCodeBlock xs
+      | codeBegin `isPrefixOf` x = parseCodeBlock xs
       | otherwise      = (commentPrefix ++ " " ++ x) : commentText xs
     commentText [] = []
 
 ```
 Take two args: `mddoc [file] [commentSyntax]`
 For example for this file `mddoc mddoc.hs.md '--'`
-```
+``` haskell
 main :: IO()
 main = do
   args <- getArgs
@@ -64,11 +64,11 @@ main = do
     input <- readFile filename
 ```
 Parse the code (`input`) with specified comment syntax and the markdown code block syntax
-```
+``` haskell
     let output = parseCodeDoc input comm "```" "```"
 ```
 This will split the input filename, split it by '.' and cut off the last extension. That will be the new output filename
-```
+``` haskell
     let outputFile = intercalate "." $ take (length (splitBy '.' filename)-1) $ splitBy '.' filename
 
     writeFile outputFile output
